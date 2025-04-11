@@ -1,0 +1,14 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/bsmg/BSIPA-MetadataFileSchema/master/Schema.json",
+  "id": "Dimmer",
+  "name": "Dimmer",
+  "author": "Hatti",
+  "version": "1.0.0",
+  "description": "Adds a modifier tab for adjusting the brightness of lights.",
+  "gameVersion": "1.39.1",
+  "dependsOn": {
+    "BSIPA": "^4.3.5",
+    "BeatSaberMarkupLanguage": "^1.12.4",
+    "SiraUtil": "^3.1.14"
+  }
+}
