@@ -14,9 +14,17 @@ namespace Dimmer.Settings
         private readonly GameplaySetup _gameplaySetup;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private DimmerModifiersUI(GameplaySetup gameplaySetup, DimmerConfig config)
+        private DimmerModifiersUI(
+#if !BS1_29_1
+            GameplaySetup gameplaySetup,
+#endif
+            DimmerConfig config)
         {
+#if !BS1_29_1
             _gameplaySetup = gameplaySetup;
+#else
+            _gameplaySetup = GameplaySetup.instance;
+#endif
             _config = config;
         }
 
