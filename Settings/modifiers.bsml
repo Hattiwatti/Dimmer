@@ -3,7 +3,7 @@
 
 	<modifier-container child-expand-width='true' horizontal-fit='PreferredSize' >
 		<checkbox text='Enable Dimmer' value='DimmerEnabled' bind-value='true' apply-on-change='true'/>
-		<dropdown-list-setting text='Dimmer Method' value='DimmerMethod' options='MethodOptions' formatter='MethodFormatter' apply-on-change='true'></dropdown-list-setting>
+		<dropdown-list-setting text='Dimmer Mode' value='DimmerMode' options='ModeOptions' formatter='ModeFormatter' apply-on-change='true'></dropdown-list-setting>
 		<checkbox-setting hover-hint='Dim the alpha value of lights' text='Dim Brightness' value='DimAlphaChannel' apply-on-change='true' ></checkbox-setting>
 		<checkbox-setting hover-hint='Dim the RGB values of lights' text='Dim Colors' value='DimRGBChannel' apply-on-change='true'></checkbox-setting>
 

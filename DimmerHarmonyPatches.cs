@@ -54,9 +54,9 @@ namespace Dimmer
             {
                 return;
             }
-            switch (_config.Method)
+            switch (_config.Mode)
             {
-                case DimmerMethod.Multiplier:
+                case DimmerMode.Multiplier:
                     if (_config.DimRGBChannel)
                     {
                         color.r *= _config.Multiplier;
@@ -68,7 +68,7 @@ namespace Dimmer
                         color.a *= _config.Multiplier;
                     }
                     break;
-                case DimmerMethod.Range:
+                case DimmerMode.Range:
                     if (_config.DimRGBChannel && color.maxColorComponent > _config.RangeMin)
                     {
                         float maxComponentMultiplier = (color.maxColorComponent - _config.RangeMin) / _dimmerRange;

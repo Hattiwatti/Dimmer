@@ -1,6 +1,6 @@
 ﻿namespace Dimmer.Settings
 {
-    public enum DimmerMethod
+    public enum DimmerMode
     {
         Multiplier,
         Range,
@@ -8,7 +8,7 @@
     public class DimmerConfig
     {
         public bool DimmerEnabled { get; set; } = true;
-        public DimmerMethod Method { get; set; } = DimmerMethod.Multiplier;
+        public DimmerMode Mode { get; set; } = DimmerMode.Multiplier;
         public bool DimAlphaChannel { get; set; } = true;
         public bool DimRGBChannel { get; set; } = false;
         public float Multiplier { get; set; } = 1.0f;

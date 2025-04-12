@@ -43,16 +43,16 @@ namespace Dimmer.Settings
             }
         }
 
-        [UIValue("DimmerMethod")]
-        private DimmerMethod Method
+        [UIValue("DimmerMode")]
+        private DimmerMode Mode
         {
             get
             {
-                return _config.Method;
+                return _config.Mode;
             }
             set
             {
-                _config.Method = value;
+                _config.Mode = value;
             }
         }
 
@@ -131,19 +131,19 @@ namespace Dimmer.Settings
             }
         }
 
-        private static Dictionary<DimmerMethod, string> MethodToString = new Dictionary<DimmerMethod, string>
+        private static Dictionary<DimmerMode, string> ModeToString = new Dictionary<DimmerMode, string>
         {
-            { DimmerMethod.Multiplier, "Multiplier" },
-            { DimmerMethod.Range, "Range" }
+            { DimmerMode.Multiplier, "Multiplier" },
+            { DimmerMode.Range, "Range" }
         };
 
-        [UIValue("MethodOptions")]
-        private List<object> Modes => MethodToString.Keys.Cast<object>().ToList();
+        [UIValue("ModeOptions")]
+        private List<object> Modes => ModeToString.Keys.Cast<object>().ToList();
 
-        [UIAction("MethodFormatter")]
-        private string MethodDisplay(DimmerMethod method)
+        [UIAction("ModeFormatter")]
+        private string ModeDisplay(DimmerMode method)
         {
-            return MethodToString[method];
+            return ModeToString[method];
         }
     }
 }
