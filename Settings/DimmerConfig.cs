@@ -5,7 +5,7 @@
         Multiplier,
         Range,
     }
-    internal class DimmerConfig
+    public class DimmerConfig
     {
         public bool DimmerEnabled { get; set; } = true;
         public DimmerMethod Method { get; set; } = DimmerMethod.Multiplier;

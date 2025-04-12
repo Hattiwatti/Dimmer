@@ -82,8 +82,8 @@ namespace Dimmer.Settings
             }
         }
 
-        [UIValue("Multiplier")]
-        private float Multiplier
+        [UIValue("DimmerMultiplier")]
+        private float DimmerMultiplier
         {
             get
             {
@@ -95,8 +95,8 @@ namespace Dimmer.Settings
             }
         }
 
-        [UIValue("RangeMin")]
-        private float RangeMin
+        [UIValue("DimmerRangeMin")]
+        private float DimmerRangeMin
         {
             get
             {
@@ -108,13 +108,13 @@ namespace Dimmer.Settings
                 if (_config.RangeMax < value)
                 {
                     _config.RangeMax = value;
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("RangeMax"));
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("DimmerRangeMax"));
                 }
             }
         }
 
-        [UIValue("RangeMax")]
-        private float RangeMax
+        [UIValue("DimmerRangeMax")]
+        private float DimmerRangeMax
         {
             get
             {
@@ -126,7 +126,7 @@ namespace Dimmer.Settings
                 if (_config.RangeMin > value)
                 {
                     _config.RangeMin = value;
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("RangeMin"));
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("DimmerRangeMin"));
                 }
             }
         }
