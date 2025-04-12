@@ -1,8 +1,8 @@
 # Dimmer
 
-A very simple Beat Saber mod that adds a modifier tab for dimming the in-game lights. Useful when the light show is too intense and you don't want to just use boring static lighting.
+A very simple Beat Saber mod that adds a modifier tab for dimming the in-game lights. Useful when the light show is too intense, and you don't want to just use boring static lighting.
 
-The dimmer can be applied both to the brightness (alpha channel) and the actual color (RGB channles) of the light. The default setting of only dimming the alpha seems to work fine, but dimming also the color of the light results to a somewhat of a different look.
+The dimmer can be applied both to the brightness (alpha channel) and the actual color (RGB channels) of the light. The default setting of only dimming the alpha seems to work fine, but dimming the color of the light results to a somewhat of a different look.
 
 Modes:
 - Multiplier multiplies all values with whatever value "Dimmer Multiplier" is set to. Simple!
