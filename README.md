@@ -10,4 +10,8 @@ Modes:
   For example with a minimum of 0.5 and a maximum of 0.6 a value of 1.0 would get scaled to 0.6, 0.75 would get scaled to 0.55 and values at or below 0.5 would remain the same.
   Max component is used for the RGB channel to scale all the color channels. The idea was to allow for finer control so that lights that are already dark would not get dimmed more.
 
+Dependencies:
+- BeatSaberMarkupLanguage
+- SiraUtil
+
 ![image](https://github.com/user-attachments/assets/6fecad57-e652-43c2-a38f-342f2086409f)
