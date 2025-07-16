@@ -23,9 +23,9 @@ namespace Dimmer
         [AffinityPatch(typeof(BloomPrePassBackgroundLightWithId), "ColorWasSet")]
         [AffinityPatch(typeof(InstancedMaterialLightWithId), "ColorWasSet")]
         [AffinityPatch(typeof(LightWithIds.LightWithId), "ColorWasSet")]
-        private void DimNewColor(ref Color newColor)
+        private void DimNewColor(ref ILightWithId __instance, ref Color newColor)
         {
-            DimColor(ref newColor);
+            DimColor(ref __instance, ref newColor);
         }
 
         [AffinityPrefix]
@@ -48,8 +48,14 @@ namespace Dimmer
         [AffinityPatch(typeof(SpriteLightWithId), "ColorWasSet")]
         [AffinityPatch(typeof(TubeBloomPrePassLightWithId), "ColorWasSet")]
         [AffinityPatch(typeof(UnityLightWithId), "ColorWasSet")]
-        private void DimColor(ref Color color)
+        private void DimColor(ref ILightWithId __instance, ref Color color)
         {
+            // Don't dim the feet
+            if (__instance.GetType() == typeof(SpriteLightWithId) && __instance.lightId == 5)
+            {
+                return;
+            }
+
             if (!_config.DimmerEnabled || !Plugin.IsPlayingChart)
             {
                 return;
