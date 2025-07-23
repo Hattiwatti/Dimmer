@@ -12,11 +12,19 @@ namespace Dimmer
 
         private float _brightnessRange = 1.0f;
 
+        private SpriteLightWithId _feetMarker = null;
+
         private DimmerHarmonyPatches(DimmerConfig config)
         {
             _config = config;
             _dimmerRange = 1.0f - _config.RangeMin;
             _brightnessRange = _config.RangeMax - _config.RangeMin;
+
+            GameObject feet = GameObject.Find("PlayersPlace/Feet");
+            if (feet != null)
+            {
+                _feetMarker = feet.GetComponent<SpriteLightWithId>();
+            }
         }
 
         [AffinityPrefix]
@@ -51,7 +59,7 @@ namespace Dimmer
         private void DimColor(ref ILightWithId __instance, ref Color color)
         {
             // Don't dim the feet
-            if (__instance.GetType() == typeof(SpriteLightWithId) && __instance.lightId == 5)
+            if (__instance == _feetMarker)
             {
                 return;
             }
