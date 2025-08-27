@@ -1,24 +1,19 @@
 ﻿using Dimmer.Settings;
 using SiraUtil.Affinity;
 using UnityEngine;
+using Chroma.Colorizer;
+using HarmonyLib;
 
 namespace Dimmer
 {
     internal class DimmerHarmonyPatches : IAffinity
     {
         private readonly DimmerConfig _config;
-
-        private float _dimmerRange = 1.0f;
-
-        private float _brightnessRange = 1.0f;
-
         private SpriteLightWithId _feetMarker = null;
 
         private DimmerHarmonyPatches(DimmerConfig config)
         {
             _config = config;
-            _dimmerRange = 1.0f - _config.RangeMin;
-            _brightnessRange = _config.RangeMax - _config.RangeMin;
 
             GameObject feet = GameObject.Find("PlayersPlace/Feet");
             if (feet != null)
@@ -34,36 +29,29 @@ namespace Dimmer
                 return;
             }
 
-            switch (_config.Mode)
+            if (_config.ColorMultiplier != 1.0f)
             {
-                case DimmerMode.Multiplier:
-                    if (_config.DimRGBChannel)
-                    {
-                        color.r *= _config.Multiplier;
-                        color.g *= _config.Multiplier;
-                        color.b *= _config.Multiplier;
-                    }
-                    if (_config.DimAlphaChannel)
-                    {
-                        color.a *= _config.Multiplier;
-                    }
-                    break;
-                case DimmerMode.Range:
-                    if (_config.DimRGBChannel && color.maxColorComponent > _config.RangeMin)
-                    {
-                        float maxComponentMultiplier = (color.maxColorComponent - _config.RangeMin) / _dimmerRange;
-                        float dimmedMaxComponent = maxComponentMultiplier * _brightnessRange + _config.RangeMin;
-                        float dimmerMultiplier = dimmedMaxComponent / color.maxColorComponent;
-                        color.r *= dimmerMultiplier;
-                        color.g *= dimmerMultiplier;
-                        color.b *= dimmerMultiplier;
-                    }
-                    if (_config.DimAlphaChannel && color.a > _config.RangeMin)
-                    {
-                        float alphaMultiplier = (color.a - _config.RangeMin) / _dimmerRange;
-                        color.a = alphaMultiplier * _brightnessRange + _config.RangeMin;
-                    }
-                    break;
+                color.r *= _config.ColorMultiplier;
+                color.g *= _config.ColorMultiplier;
+                color.b *= _config.ColorMultiplier;
+            }
+
+            if (_config.AlphaMultiplier != 1.0f)
+            {
+                color.a *= _config.AlphaMultiplier;
+            }
+
+            if (_config.LimitColorComponents && (color.maxColorComponent is float maxComponent && maxComponent > _config.MaxColorComponent))
+            {
+                float multiplier = _config.MaxColorComponent / maxComponent;
+                color.r *= multiplier;
+                color.g *= multiplier;
+                color.b *= multiplier;
+            }
+
+            if (_config.LimitBrightness && color.a > _config.MaxBrightness)
+            {
+                color.a = _config.MaxBrightness;
             }
         }
 
@@ -107,13 +95,6 @@ namespace Dimmer
 
             DimColor(ref color);
         }
-        
-        [AffinityPrefix]
-        [AffinityPatch(typeof(ParametricBoxController), "Refresh")]
-        private void Refresh(ref ParametricBoxController __instance)
-        {
-            //DimColor(ref __instance.color);
-        }
 
         [AffinityPrefix]
         [AffinityPatch(typeof(TubeBloomPrePassLight), nameof(TubeBloomPrePassLight.color), AffinityMethodType.Setter)]
@@ -121,6 +102,24 @@ namespace Dimmer
         {
             DimColor(ref value);
         }
-    }
+        
+        [AffinityPrefix]
+        [AffinityPatch(typeof(ObstacleColorizer), "Refresh")]
+        private void ObstacleColorizerRefresh(ObstacleColorizer __instance)
+        {
+            if (!_config.OverrideChromaWallAlpha)
+                return;
 
+            Traverse traverse = Traverse.Create(__instance as ObjectColorizer).Field("_color");
+            Color? color = traverse.GetValue<Color?>();
+
+            if (!color.HasValue)
+                return;
+
+            Color dimmedColor = color.Value;
+            dimmedColor.a = _config.ChromaWallAlpha;
+
+            traverse.SetValue(dimmedColor);
+        }
+    }
 }

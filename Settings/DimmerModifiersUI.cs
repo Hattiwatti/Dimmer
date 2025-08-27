@@ -2,9 +2,7 @@
 using BeatSaberMarkupLanguage.GameplaySetup;
 using BeatSaberMarkupLanguage.Attributes;
 using Zenject;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace Dimmer.Settings
 {
@@ -13,6 +11,7 @@ namespace Dimmer.Settings
         private readonly DimmerConfig _config;
         private readonly GameplaySetup _gameplaySetup;
         public event PropertyChangedEventHandler PropertyChanged;
+
 
         private DimmerModifiersUI(
 #if !BS1_29_1
@@ -51,107 +50,108 @@ namespace Dimmer.Settings
             }
         }
 
-        [UIValue("DimmerMode")]
-        private DimmerMode Mode
+        [UIValue("ColorMultiplier")]
+        private float ColorMultiplier
         {
             get
             {
-                return _config.Mode;
+                return _config.ColorMultiplier;
             }
             set
             {
-                _config.Mode = value;
+                _config.ColorMultiplier = value;
             }
         }
 
-        [UIValue("DimAlphaChannel")]
-        private bool DimAlphaChannel
+        [UIValue("AlphaMultiplier")]
+        private float AlphaMultiplier
         {
             get
             {
-                return _config.DimAlphaChannel;
+                return _config.AlphaMultiplier;
             }
             set
             {
-                _config.DimAlphaChannel = value;
+                _config.AlphaMultiplier = value;
             }
         }
 
-        [UIValue("DimRGBChannel")]
-        private bool DimRGBChannel
+        [UIValue("LimitColorComponents")]
+        private bool LimitColorComponents
         {
             get
             {
-                return _config.DimRGBChannel;
+                return _config.LimitColorComponents;
             }
             set
             {
-                _config.DimRGBChannel = value;
+                _config.LimitColorComponents = value;
             }
         }
 
-        [UIValue("DimmerMultiplier")]
-        private float DimmerMultiplier
+        [UIValue("MaxColorComponent")]
+        private float MaxColorComponent
         {
             get
             {
-                return _config.Multiplier;
+                return _config.MaxColorComponent;
             }
             set
             {
-                _config.Multiplier = value;
+                _config.MaxColorComponent = value;
             }
         }
 
-        [UIValue("DimmerRangeMin")]
-        private float DimmerRangeMin
+        [UIValue("LimitBrightness")]
+        private bool LimitBrightness
         {
             get
             {
-                return _config.RangeMin;
+                return _config.LimitBrightness;
             }
             set
             {
-                _config.RangeMin = value;
-                if (_config.RangeMax < value)
-                {
-                    _config.RangeMax = value;
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("DimmerRangeMax"));
-                }
+                _config.LimitBrightness = value;
             }
         }
 
-        [UIValue("DimmerRangeMax")]
-        private float DimmerRangeMax
+        [UIValue("MaxBrightness")]
+        private float MaxBrightness
         {
             get
             {
-                return _config.RangeMax;
+                return _config.MaxBrightness;
             }
             set
             {
-                _config.RangeMax = value;
-                if (_config.RangeMin > value)
-                {
-                    _config.RangeMin = value;
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("DimmerRangeMin"));
-                }
+                _config.MaxBrightness = value;
             }
         }
 
-        private static Dictionary<DimmerMode, string> ModeToString = new Dictionary<DimmerMode, string>
+        [UIValue("OverrideChromaWallAlpha")]
+        private bool OverrideChromaWallAlpha
         {
-            { DimmerMode.Multiplier, "Multiplier" },
-            { DimmerMode.Range, "Range" }
-        };
+            get
+            {
+                return _config.OverrideChromaWallAlpha;
+            }
+            set
+            {
+                _config.OverrideChromaWallAlpha = value;
+            }
+        }
 
-        [UIValue("ModeOptions")]
-        private List<object> Modes => ModeToString.Keys.Cast<object>().ToList();
-
-        [UIAction("ModeFormatter")]
-        private string ModeDisplay(DimmerMode method)
+        [UIValue("ChromaWallAlpha")]
+        private float ChromaWallAlpha
         {
-            return ModeToString[method];
+            get
+            {
+                return _config.ChromaWallAlpha;
+            }
+            set
+            {
+                _config.ChromaWallAlpha = value;
+            }
         }
     }
 }

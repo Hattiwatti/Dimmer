@@ -1,21 +1,29 @@
 <bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xsi:noNamespaceSchemaLocation='https://monkeymanboy.github.io/BSML-Docs/BSMLSchema.xsd'>
 
-	<modifier-container child-expand-width='true' horizontal-fit='PreferredSize' >
+	<settings-container child-expand-width='true' horizontal-fit='PreferredSize' >
 		<checkbox text='Enable Dimmer' value='DimmerEnabled' bind-value='true' apply-on-change='true'/>
-		<dropdown-list-setting text='Dimmer Mode' value='DimmerMode' options='ModeOptions' formatter='ModeFormatter' apply-on-change='true'></dropdown-list-setting>
-		<checkbox-setting hover-hint='Dim the alpha value of lights' text='Dim Brightness' value='DimAlphaChannel' apply-on-change='true' ></checkbox-setting>
-		<checkbox-setting hover-hint='Dim the RGB values of lights' text='Dim Colors' value='DimRGBChannel' apply-on-change='true'></checkbox-setting>
 
-		<vertical vertical-fit='PreferredSize' pad-top='5'>
-			<slider-setting hover-hint='Simple multiplier that is used when Dimmer Method is set to Multiplier' text='Dimmer Multiplier' value='DimmerMultiplier' apply-on-change='true' min='0' max='1' increment='0.01'></slider-setting>
+		<vertical vertical-fit='PreferredSize' pad-top='3'>
+			<slider-setting hover-hint='Simple multiplier applied to the RGB channels of lights. Makes colors look more muted.' text='Color Multiplier' value='ColorMultiplier' apply-on-change='true' min='0' max='1' increment='0.01'></slider-setting>
+			<slider-setting hover-hint='Simple multiplier applied to the alpha channel of lights. Makes colors look less bright.' text='Brightness Multiplier' value='AlphaMultiplier' apply-on-change='true' min='0' max='1' increment='0.01'></slider-setting>
 		</vertical>
 
-		<vertical vertical-fit='PreferredSize' pad-top='5'>
-			<slider-setting hover-hint='Used when Dimmer Method is set to Range. Use together with Range Maximum to specify a range to which values above the minimum are scaled to.' text='Range Minimum' value='DimmerRangeMin' bind-value='true' apply-on-change='true' min='0' max='1.0' increment='0.01'></slider-setting>
-			<slider-setting hover-hint='Used when Dimmer Method is set to Range. Use together with Range Minimum to specify a range to which values above the minimum are scaled to.' text='Range Maximum' value='DimmerRangeMax' bind-value='true' apply-on-change='true' min='0' max='1.0' increment='0.01'></slider-setting>
+		<vertical vertical-fit='PreferredSize' pad-top='3'>
+			<checkbox-setting hover-hint='When enabled, clamps the maximum color component to the specified value' text='Limit Color Components' value='LimitColorComponents' apply-on-change='true'></checkbox-setting>
+			<slider-setting hover-hint='Maximum value the color channels will be clamped to when "Limit Color Components" is enabled' text='Max Color Component' value='MaxColorComponent' apply-on-change='true' min='0' max='1' increment='0.01'></slider-setting>
 		</vertical>
 
-	</modifier-container>
+		<vertical vertical-fit='PreferredSize' pad-top='3'>
+			<checkbox-setting hover-hint='When enabled, clamps the alpha channel of lights to the specified value' text='Limit Brightness' value='LimitBrightness' apply-on-change='true'></checkbox-setting>
+			<slider-setting hover-hint='Maximum value the alpha channel will be clamped to when "Limit Brightness" is enabled' text='Max Brightness' value='MaxBrightness' apply-on-change='true' min='0' max='1' increment='0.01'></slider-setting>
+		</vertical>
+
+		<vertical vertical-fit='PreferredSize' pad-top='3'>
+			<checkbox-setting hover-hint='When enabled, clamps the alpha channel of Chroma-colored walls to the specified value' text='Override Chroma Wall Brightness' value='OverrideChromaWallAlpha' apply-on-change='true'></checkbox-setting>
+			<slider-setting text='Chroma Wall Brightness' value='ChromaWallAlpha' apply-on-change='true' min='0' max='1' increment='0.01'></slider-setting>
+		</vertical>
+
+	</settings-container>
 
 </bg>
