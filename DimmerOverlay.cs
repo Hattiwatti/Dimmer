@@ -1,5 +1,6 @@
 ﻿using Dimmer.Settings;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
@@ -71,7 +72,10 @@ namespace Dimmer
             BSLayerMask.CutEffectParticles |
             BSLayerMask.Obstacles |
             BSLayerMask.PlayersPlace |
-            BSLayerMask.DontShowInExternalMRCamera);
+            BSLayerMask.DontShowInExternalMRCamera |
+            BSLayerMask.Avatar |
+            BSLayerMask.FirstPerson |
+            BSLayerMask.ThirdPerson);
 
         private readonly DimmerConfig _config;
 
@@ -80,7 +84,7 @@ namespace Dimmer
         private GameObject _cameraObject;
         private Camera _dimmerCamera;
 
-        private int _originalCullingMask;
+        private Dictionary<Camera, int> _originalCullingMasks = new Dictionary<Camera, int>();
 
         private DimmerOverlay(DimmerConfig config)
         {
@@ -111,9 +115,6 @@ namespace Dimmer
             _dimmerCamera.targetTexture = null;
             _dimmerCamera.clearFlags = CameraClearFlags.Nothing;
 
-            _dimmerCamera.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-            _dimmerCamera.transform.SetParent(Camera.main.transform, false);
-
             _overlayMat = new Material(Shader.Find("Hidden/Internal-Colored"));
             _overlayMat.hideFlags = HideFlags.HideAndDontSave;
             _overlayMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
@@ -141,10 +142,16 @@ namespace Dimmer
 
         public void OnCameraPreCull(Camera camera)
         {
-            if (!Plugin.IsPlayingChart || camera != Camera.main)
+            if (!Plugin.IsPlayingChart)
                 return;
 
-            _originalCullingMask = camera.cullingMask;
+            if (camera == _dimmerCamera)
+                return;
+
+            if (!_config.DimmerCamera2 && camera != Camera.main)
+                return;
+
+            _originalCullingMasks[camera] = camera.cullingMask;
 
             camera.cullingMask &= ~DimmerCullingMask;
         }
@@ -154,15 +161,20 @@ namespace Dimmer
             if (!Plugin.IsPlayingChart)
                 return;
 
-            if (camera != Camera.main && _dimmerCamera != null)
+            if (camera == _dimmerCamera)
                 return;
 
-            camera.cullingMask = _originalCullingMask;
+            if (!_config.DimmerCamera2 && camera != Camera.main)
+                return;
 
             // Render dimmer overlay
             Graphics.Blit(camera.activeTexture, camera.activeTexture, _overlayMat);
 
             _dimmerCamera.targetTexture = camera.activeTexture;
+            _dimmerCamera.transform.SetParent(camera.transform, false);
+            _dimmerCamera.fieldOfView = camera.fieldOfView;
+            _dimmerCamera.rect = camera.rect;
+            _dimmerCamera.aspect = camera.aspect;
 
             if (camera.stereoActiveEye != Camera.MonoOrStereoscopicEye.Mono)
             {
@@ -181,6 +193,12 @@ namespace Dimmer
                 _dimmerCamera.projectionMatrix = camera.projectionMatrix;
                 _dimmerCamera.nonJitteredProjectionMatrix = camera.nonJitteredProjectionMatrix;
             }
+
+            // Revert the camera culling mask back to original value just in case
+            camera.cullingMask = _originalCullingMasks[camera];
+
+            // Render layers that were originally enabled but disabled by the dimmer mask
+            _dimmerCamera.cullingMask = _originalCullingMasks[camera] & DimmerCullingMask;
 
             // Render rest of the layers on top
             _dimmerCamera.Render();

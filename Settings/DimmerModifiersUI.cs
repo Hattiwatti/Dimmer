@@ -62,5 +62,18 @@ namespace Dimmer.Settings
                 _config.DimmerOpacity = value;
             }
         }
+
+        [UIValue("DimmerCamera2")]
+        private bool DimmerCamera2
+        {
+            get
+            {
+                return _config.DimmerCamera2;
+            }
+            set
+            {
+                _config.DimmerCamera2 = value;
+            }
+        }
     }
 }

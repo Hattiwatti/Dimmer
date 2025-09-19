@@ -2,8 +2,14 @@
     xsi:noNamespaceSchemaLocation='https://monkeymanboy.github.io/BSML-Docs/BSMLSchema.xsd'>
 
 	<settings-container child-expand-width='true' horizontal-fit='PreferredSize' >
-		<checkbox hover-hint='When enabled, draws a black transparent overlay on top of the environment' text='Enable Dimmer Overlay' value='DimmerEnabled' bind-value='true' apply-on-change='true'/>
-		<slider-setting hover-hint='How opaque should the dimmer overlay be' text='Dimmer Opacity' value='DimmerOpacity' apply-on-change='true' min='0' max='1' increment='0.01'></slider-setting>
+		<vertical vertical-fit='PreferredSize'>
+			<checkbox hover-hint='When enabled, draws a black transparent overlay on top of the environment' text='Enable Dimmer Overlay' value='DimmerEnabled' bind-value='true' apply-on-change='true'/>
+			<slider-setting hover-hint='How opaque should the dimmer overlay be' text='Dimmer Opacity' value='DimmerOpacity' apply-on-change='true' min='0' max='1' increment='0.01'></slider-setting>
+		</vertical>
+		
+		<vertical vertical-fit='PreferredSize' pad-top='3'>
+			<checkbox text='Enable in Camera2' value='DimmerCamera2' bind-value='true' apply-on-change='true'/>
+		</vertical>
 	</settings-container>
 
 </bg>
