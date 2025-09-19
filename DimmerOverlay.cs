@@ -141,7 +141,7 @@ namespace Dimmer
 
         public void OnCameraPreCull(Camera camera)
         {
-            if (!_config.DimmerOverlayEnabled)
+            if (!Plugin.IsPlayingChart)
                 return;
 
             if (camera != Camera.main)
@@ -154,7 +154,7 @@ namespace Dimmer
 
         public void OnCameraPostRender(Camera camera)
         {
-            if (!_config.DimmerOverlayEnabled)
+            if (!Plugin.IsPlayingChart)
                 return;
 
             if (camera != Camera.main && _dimmerCamera != null)
