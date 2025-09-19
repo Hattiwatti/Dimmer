@@ -7,7 +7,7 @@ namespace Dimmer.Settings
     {
         public bool DimmerOverlayEnabled { get; set; } = false;
         public float DimmerOverlayOpacity { get; set; } = 0.90f;
-        public bool DimmerEnabled { get; set; } = false;
+        public bool LightDimmerEnabled { get; set; } = false;
         public float ColorMultiplier { get; set; } = 1.0f;
         public float AlphaMultiplier { get; set; } = 1.0f;
         public bool LimitColorComponents { get; set; } = false;

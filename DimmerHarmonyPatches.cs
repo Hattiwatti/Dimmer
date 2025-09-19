@@ -24,7 +24,7 @@ namespace Dimmer
 
         private void DimColor(ref Color color)
         {
-            if (!_config.DimmerEnabled || !Plugin.IsPlayingChart)
+            if (!_config.LightDimmerEnabled || !Plugin.IsPlayingChart)
             {
                 return;
             }

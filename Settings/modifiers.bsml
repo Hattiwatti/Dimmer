@@ -2,10 +2,10 @@
     xsi:noNamespaceSchemaLocation='https://monkeymanboy.github.io/BSML-Docs/BSMLSchema.xsd'>
 
 	<settings-container child-expand-width='true' horizontal-fit='PreferredSize' >
-		<checkbox text='Enable Dimmer Overlay' value='DimmerOverlayEnabled' bind-value='true' apply-on-change='true'/>
-		<slider-setting hover-hint='How opaque should the dimmer overlay be.' text='Overlay Opacity' value='OverlayOpacity' apply-on-change='true' min='0' max='1' increment='0.01'></slider-setting>
+		<checkbox hover-hint='When enabled, draws a black overlay on top of the environment' text='Enable Dimmer Overlay' value='DimmerOverlayEnabled' bind-value='true' apply-on-change='true'/>
+		<slider-setting hover-hint='How opaque should the dimmer overlay be' text='Overlay Opacity' value='OverlayOpacity' apply-on-change='true' min='0' max='1' increment='0.01'></slider-setting>
 
-		<checkbox text='Enable Dimmer' value='DimmerEnabled' bind-value='true' apply-on-change='true'/>
+		<checkbox text='Enable Light Dimmer' value='LightDimmerEnabled' bind-value='true' apply-on-change='true'/>
 
 		<vertical vertical-fit='PreferredSize' pad-top='3'>
 			<slider-setting hover-hint='Simple multiplier applied to the RGB channels of lights. Makes colors look more muted.' text='Color Multiplier' value='ColorMultiplier' apply-on-change='true' min='0' max='1' increment='0.01'></slider-setting>

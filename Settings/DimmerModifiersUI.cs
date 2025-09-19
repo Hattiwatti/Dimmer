@@ -63,16 +63,16 @@ namespace Dimmer.Settings
             }
         }
 
-        [UIValue("DimmerEnabled")]
-        private bool DimmerEnabled
+        [UIValue("LightDimmerEnabled")]
+        private bool LightDimmerEnabled
         {
             get
             {
-                return _config.DimmerEnabled;
+                return _config.LightDimmerEnabled;
             }
             set
             {
-                _config.DimmerEnabled = value;
+                _config.LightDimmerEnabled = value;
             }
         }
 
