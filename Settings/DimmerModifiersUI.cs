@@ -37,6 +37,32 @@ namespace Dimmer.Settings
             _gameplaySetup.RemoveTab("Dimmer");
         }
 
+        [UIValue("DimmerOverlayEnabled")]
+        private bool DimmerOverlayEnabled
+        {
+            get
+            {
+                return _config.DimmerOverlayEnabled;
+            }
+            set
+            {
+                _config.DimmerOverlayEnabled = value;
+            }
+        }
+
+        [UIValue("OverlayOpacity")]
+        private float OverlayOpacity
+        {
+            get
+            {
+                return _config.DimmerOverlayOpacity;
+            }
+            set
+            {
+                _config.DimmerOverlayOpacity = value;
+            }
+        }
+
         [UIValue("DimmerEnabled")]
         private bool DimmerEnabled
         {

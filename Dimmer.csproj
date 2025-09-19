@@ -162,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DimmerHarmonyPatches.cs" />
+    <Compile Include="DimmerOverlay.cs" />
     <Compile Include="Installers\DimmerAppInstaller.cs" />
     <Compile Include="Installers\DimmerMenuInstaller.cs" />
     <Compile Include="Installers\DimmerPlayerInstaller.cs" />

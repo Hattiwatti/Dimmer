@@ -8,6 +8,7 @@ namespace Dimmer.Installers
         public override void InstallBindings()
         {
             this.Container.BindInterfacesTo<DimmerHarmonyPatches>().AsSingle();
+            this.Container.BindInterfacesTo<DimmerOverlay>().AsSingle();
         }
     }
 
