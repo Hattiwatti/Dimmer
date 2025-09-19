@@ -89,7 +89,7 @@ namespace Dimmer
 
         public void Initialize()
         {
-            if (!_config.DimmerOverlayEnabled)
+            if (!_config.DimmerEnabled)
                 return;
 
             // Move the glow around the platform to PlayersPlace layer so it doesn't get dimmed
@@ -120,7 +120,7 @@ namespace Dimmer
             _overlayMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             _overlayMat.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
             _overlayMat.SetInt("_ZWrite", 0);
-            _overlayMat.SetColor("_Color", new Color(0f, 0f, 0f, _config.DimmerOverlayOpacity));
+            _overlayMat.SetColor("_Color", new Color(0f, 0f, 0f, _config.DimmerOpacity));
 
             Camera.onPreCull += OnCameraPreCull;
             Camera.onPostRender += OnCameraPostRender;
@@ -128,7 +128,7 @@ namespace Dimmer
 
         public void Dispose()
         {
-            if (!_config.DimmerOverlayEnabled)
+            if (!_config.DimmerEnabled)
                 return;
 
             Camera.onPreCull -= OnCameraPreCull;
@@ -141,10 +141,7 @@ namespace Dimmer
 
         public void OnCameraPreCull(Camera camera)
         {
-            if (!Plugin.IsPlayingChart)
-                return;
-
-            if (camera != Camera.main)
+            if (!Plugin.IsPlayingChart || camera != Camera.main)
                 return;
 
             _originalCullingMask = camera.cullingMask;

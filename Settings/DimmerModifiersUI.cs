@@ -37,146 +37,29 @@ namespace Dimmer.Settings
             _gameplaySetup.RemoveTab("Dimmer");
         }
 
-        [UIValue("DimmerOverlayEnabled")]
-        private bool DimmerOverlayEnabled
+        [UIValue("DimmerEnabled")]
+        private bool DimmerEnabled
         {
             get
             {
-                return _config.DimmerOverlayEnabled;
+                return _config.DimmerEnabled;
             }
             set
             {
-                _config.DimmerOverlayEnabled = value;
+                _config.DimmerEnabled = value;
             }
         }
 
-        [UIValue("OverlayOpacity")]
-        private float OverlayOpacity
+        [UIValue("DimmerOpacity")]
+        private float DimmerOpacity
         {
             get
             {
-                return _config.DimmerOverlayOpacity;
+                return _config.DimmerOpacity;
             }
             set
             {
-                _config.DimmerOverlayOpacity = value;
-            }
-        }
-
-        [UIValue("LightDimmerEnabled")]
-        private bool LightDimmerEnabled
-        {
-            get
-            {
-                return _config.LightDimmerEnabled;
-            }
-            set
-            {
-                _config.LightDimmerEnabled = value;
-            }
-        }
-
-        [UIValue("ColorMultiplier")]
-        private float ColorMultiplier
-        {
-            get
-            {
-                return _config.ColorMultiplier;
-            }
-            set
-            {
-                _config.ColorMultiplier = value;
-            }
-        }
-
-        [UIValue("AlphaMultiplier")]
-        private float AlphaMultiplier
-        {
-            get
-            {
-                return _config.AlphaMultiplier;
-            }
-            set
-            {
-                _config.AlphaMultiplier = value;
-            }
-        }
-
-        [UIValue("LimitColorComponents")]
-        private bool LimitColorComponents
-        {
-            get
-            {
-                return _config.LimitColorComponents;
-            }
-            set
-            {
-                _config.LimitColorComponents = value;
-            }
-        }
-
-        [UIValue("MaxColorComponent")]
-        private float MaxColorComponent
-        {
-            get
-            {
-                return _config.MaxColorComponent;
-            }
-            set
-            {
-                _config.MaxColorComponent = value;
-            }
-        }
-
-        [UIValue("LimitBrightness")]
-        private bool LimitBrightness
-        {
-            get
-            {
-                return _config.LimitBrightness;
-            }
-            set
-            {
-                _config.LimitBrightness = value;
-            }
-        }
-
-        [UIValue("MaxBrightness")]
-        private float MaxBrightness
-        {
-            get
-            {
-                return _config.MaxBrightness;
-            }
-            set
-            {
-                _config.MaxBrightness = value;
-            }
-        }
-
-        [UIValue("OverrideChromaWallAlpha")]
-        private bool OverrideChromaWallAlpha
-        {
-            get
-            {
-                return _config.OverrideChromaWallAlpha;
-            }
-            set
-            {
-                _config.OverrideChromaWallAlpha = value;
-            }
-        }
-
-        [UIValue("ChromaWallAlpha")]
-        private float ChromaWallAlpha
-        {
-            get
-            {
-                return _config.ChromaWallAlpha;
-            }
-            set
-            {
-                _config.ChromaWallAlpha = value;
+                _config.DimmerOpacity = value;
             }
         }
     }

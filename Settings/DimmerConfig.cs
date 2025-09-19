@@ -5,16 +5,7 @@ namespace Dimmer.Settings
 
     public class DimmerConfig
     {
-        public bool DimmerOverlayEnabled { get; set; } = false;
-        public float DimmerOverlayOpacity { get; set; } = 0.90f;
-        public bool LightDimmerEnabled { get; set; } = false;
-        public float ColorMultiplier { get; set; } = 1.0f;
-        public float AlphaMultiplier { get; set; } = 1.0f;
-        public bool LimitColorComponents { get; set; } = false;
-        public float MaxColorComponent { get; set; } = 1.0f;
-        public bool LimitBrightness { get; set; } = false;
-        public float MaxBrightness { get; set; } = 1.0f;
-        public bool OverrideChromaWallAlpha { get; set; } = false;
-        public float ChromaWallAlpha {  get; set; } = 1.0f;
+        public bool DimmerEnabled { get; set; } = false;
+        public float DimmerOpacity { get; set; } = 0.90f;
     }
 }

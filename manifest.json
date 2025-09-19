@@ -3,12 +3,11 @@
   "id": "Dimmer",
   "name": "Dimmer",
   "author": "Hatti",
-  "version": "1.0.0",
-  "description": "Adds a modifier tab for adjusting the brightness of lights.",
+  "version": "2.0.0",
+  "description": "Adds a dimming overlay to the environment and a modifier tab to adjust its opacity.",
   "gameVersion": "1.39.1",
   "dependsOn": {
     "BSIPA": "^4.3.5",
-    "BeatSaberMarkupLanguage": "^1.12.4",
-    "SiraUtil": "^3.1.14"
+    "BeatSaberMarkupLanguage": "^1.12.4"
   }
 }
