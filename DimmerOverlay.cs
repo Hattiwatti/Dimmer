@@ -71,6 +71,7 @@ namespace Dimmer
             BSLayerMask.UI |
             BSLayerMask.CutEffectParticles |
             BSLayerMask.Obstacles |
+            BSLayerMask.FixMRAlpha |
             BSLayerMask.PlayersPlace |
             BSLayerMask.DontShowInExternalMRCamera |
             BSLayerMask.Avatar |
