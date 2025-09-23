@@ -1,7 +1,9 @@
 ﻿using Dimmer.Settings;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Zenject;
 
 namespace Dimmer
@@ -82,8 +84,8 @@ namespace Dimmer
 
         private Material _overlayMat;
 
-        private GameObject _cameraObject;
         private Camera _dimmerCamera;
+        private Camera _dimmerStereoCamera;
 
         private Dictionary<Camera, int> _originalCullingMasks = new Dictionary<Camera, int>();
 
@@ -91,6 +93,12 @@ namespace Dimmer
         {
             _config = config;
         }
+
+        // From Camera2, need to copy the whole main camera gameobject to get proper visuals.
+        static readonly HashSet<string> AllowedCameraComponents = new HashSet<string>()
+        {
+            "Camera", "BloomPrePass", "MainEffectController"
+        };
 
         public void Initialize()
         {
@@ -104,17 +112,33 @@ namespace Dimmer
                 platformGlow.layer = (int)BSLayers.PlayersPlace;
             }
 
-            _cameraObject = new GameObject("DimmerCamera");
-            _cameraObject.hideFlags = HideFlags.HideAndDontSave;
-            _dimmerCamera = _cameraObject.AddComponent<Camera>();
+            var cameraGameObject = GameObject.Instantiate(Camera.main.gameObject);
+            cameraGameObject.name = "DimmerCamera";
+            cameraGameObject.hideFlags = HideFlags.HideAndDontSave;
 
-            _dimmerCamera.CopyFrom(Camera.main);
+            _dimmerCamera = cameraGameObject.GetComponent<Camera>();
             _dimmerCamera.name = "DimmerCamera";
             _dimmerCamera.enabled = false;
             _dimmerCamera.tag = "Untagged";
-            _dimmerCamera.cullingMask = DimmerCullingMask;
-            _dimmerCamera.targetTexture = null;
             _dimmerCamera.clearFlags = CameraClearFlags.Nothing;
+            _dimmerCamera.stereoTargetEye = StereoTargetEyeMask.None;
+
+            // From Camera2. Destroy components that are not needed
+            foreach (var component in cameraGameObject.GetComponents<Behaviour>())
+            {
+                if (!AllowedCameraComponents.Contains(component.GetType().Name))
+                    GameObject.DestroyImmediate(component);
+            }
+
+            var stereoCameraGameObject = GameObject.Instantiate(cameraGameObject);
+            stereoCameraGameObject.name = "DimmerStereoCamera";
+            _dimmerStereoCamera = stereoCameraGameObject.GetComponent<Camera>();
+            _dimmerStereoCamera.name = "DimmerStereoCamera";
+            _dimmerStereoCamera.enabled = false;
+            _dimmerStereoCamera.depth = 1;
+            _dimmerStereoCamera.stereoTargetEye = StereoTargetEyeMask.None;
+            _dimmerStereoCamera.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            _dimmerStereoCamera.transform.SetParent(Camera.main.transform, false);
 
             _overlayMat = new Material(Shader.Find("Hidden/Internal-Colored"));
             _overlayMat.hideFlags = HideFlags.HideAndDontSave;
@@ -135,10 +159,6 @@ namespace Dimmer
 
             Camera.onPreCull -= OnCameraPreCull;
             Camera.onPostRender -= OnCameraPostRender;
-
-            GameObject.Destroy(_cameraObject);
-            GameObject.Destroy(_dimmerCamera);
-            GameObject.Destroy(_overlayMat);
         }
 
         public void OnCameraPreCull(Camera camera)
@@ -146,14 +166,13 @@ namespace Dimmer
             if (!Plugin.IsPlayingChart)
                 return;
 
-            if (camera == _dimmerCamera)
+            if (camera == _dimmerCamera || camera == _dimmerStereoCamera)
                 return;
 
-            if (!_config.DimmerCamera2 && camera != Camera.main)
+            if (camera != Camera.main && !_config.DimmerCamera2)
                 return;
 
             _originalCullingMasks[camera] = camera.cullingMask;
-
             camera.cullingMask &= ~DimmerCullingMask;
         }
 
@@ -162,47 +181,45 @@ namespace Dimmer
             if (!Plugin.IsPlayingChart)
                 return;
 
-            if (camera == _dimmerCamera)
+            if (camera == _dimmerCamera || camera == _dimmerStereoCamera)
                 return;
 
-            if (!_config.DimmerCamera2 && camera != Camera.main)
+            if (camera != Camera.main && !_config.DimmerCamera2)
                 return;
 
             // Render dimmer overlay
             Graphics.Blit(camera.activeTexture, camera.activeTexture, _overlayMat);
 
-            _dimmerCamera.targetTexture = camera.activeTexture;
-            _dimmerCamera.transform.SetParent(camera.transform, false);
-            _dimmerCamera.fieldOfView = camera.fieldOfView;
-            _dimmerCamera.rect = camera.rect;
-            _dimmerCamera.aspect = camera.aspect;
-
-            if (camera.stereoActiveEye != Camera.MonoOrStereoscopicEye.Mono)
-            {
-                Camera.StereoscopicEye activeEye = camera.stereoActiveEye == Camera.MonoOrStereoscopicEye.Left ? Camera.StereoscopicEye.Left : Camera.StereoscopicEye.Right;
-
-                Vector3 eyePos = new Vector3(Camera.main.stereoSeparation / 2, 0, 0);
-                eyePos.x *= (activeEye == Camera.StereoscopicEye.Left) ? -1 : 1;
-
-                _dimmerCamera.transform.SetLocalPositionAndRotation(eyePos, Quaternion.identity);
-                _dimmerCamera.projectionMatrix = camera.GetStereoProjectionMatrix(activeEye);
-                _dimmerCamera.nonJitteredProjectionMatrix = camera.GetStereoNonJitteredProjectionMatrix(activeEye);
-            }
-            else
-            {
-                _dimmerCamera.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-                _dimmerCamera.projectionMatrix = camera.projectionMatrix;
-                _dimmerCamera.nonJitteredProjectionMatrix = camera.nonJitteredProjectionMatrix;
-            }
-
             // Revert the camera culling mask back to original value just in case
             camera.cullingMask = _originalCullingMasks[camera];
 
-            // Render layers that were originally enabled but disabled by the dimmer mask
-            _dimmerCamera.cullingMask = _originalCullingMasks[camera] & DimmerCullingMask;
-
-            // Render rest of the layers on top
-            _dimmerCamera.Render();
+            bool isSinglePassStereo = camera.stereoActiveEye != Camera.MonoOrStereoscopicEye.Mono && camera.activeTexture.volumeDepth == 2;
+            
+            if (camera == Camera.main)
+            {
+                if (isSinglePassStereo)
+                {
+                    _dimmerStereoCamera.CopyFrom(camera);
+                    _dimmerStereoCamera.name = "DimmerCamera";
+                    _dimmerStereoCamera.cullingMask &= DimmerCullingMask;
+                    _dimmerStereoCamera.tag = "Untagged";
+                    _dimmerStereoCamera.clearFlags = CameraClearFlags.Nothing;
+                }
+                _dimmerStereoCamera.enabled = isSinglePassStereo;
+            }
+            
+            if (!isSinglePassStereo)
+            {
+                _dimmerCamera.CopyFrom(camera);
+                _dimmerCamera.name = "DimmerCamera";
+                _dimmerCamera.cullingMask &= DimmerCullingMask;
+                _dimmerCamera.tag = "Untagged";
+                _dimmerCamera.targetTexture = camera.activeTexture;
+                _dimmerCamera.clearFlags = CameraClearFlags.Nothing;
+                _dimmerCamera.stereoTargetEye = StereoTargetEyeMask.None;
+                _dimmerCamera.enabled = false;
+                _dimmerCamera.Render();
+            }
         }
 
     }
