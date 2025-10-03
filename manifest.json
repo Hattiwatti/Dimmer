@@ -3,7 +3,7 @@
   "id": "Dimmer",
   "name": "Dimmer",
   "author": "Hatti",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Adds a dimming overlay to the environment and a modifier tab to adjust its opacity.",
   "gameVersion": "1.39.1",
   "dependsOn": {
