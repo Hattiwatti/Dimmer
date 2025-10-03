@@ -64,6 +64,25 @@ namespace Dimmer
         Skybox = 1 << 29,
         MRForegroundClipPlane = 1 << 30,
     }
+
+    struct SavedCameraSettings
+    {
+        int CullingMask;
+        CameraClearFlags ClearFlags;
+
+        public SavedCameraSettings(Camera cam)
+        {
+            CullingMask = cam.cullingMask;
+            ClearFlags = cam.clearFlags;
+        }
+
+        public void Restore(Camera cam)
+        {
+            cam.cullingMask = CullingMask;
+            cam.clearFlags = ClearFlags;
+        }
+    }
+
     internal class DimmerOverlay : IInitializable, IDisposable
     {
         private static int DimmerCullingMask = (int)(
@@ -87,7 +106,7 @@ namespace Dimmer
         private Camera _dimmerCamera;
         private Camera _dimmerStereoCamera;
 
-        private Dictionary<Camera, int> _originalCullingMasks = new Dictionary<Camera, int>();
+        private Dictionary<Camera, SavedCameraSettings> _originalCameraSettings = new Dictionary<Camera, SavedCameraSettings>();
 
         private DimmerOverlay(DimmerConfig config)
         {
@@ -97,7 +116,7 @@ namespace Dimmer
         // From Camera2, need to copy the whole main camera gameobject to get proper visuals.
         static readonly HashSet<string> AllowedCameraComponents = new HashSet<string>()
         {
-            "Camera", "BloomPrePass", "MainEffectController"
+            "Camera", "BloomPrePass"
         };
 
         public void Initialize()
@@ -135,8 +154,8 @@ namespace Dimmer
             _dimmerStereoCamera = stereoCameraGameObject.GetComponent<Camera>();
             _dimmerStereoCamera.name = "DimmerStereoCamera";
             _dimmerStereoCamera.enabled = false;
-            _dimmerStereoCamera.depth = 1;
-            _dimmerStereoCamera.stereoTargetEye = StereoTargetEyeMask.None;
+            _dimmerStereoCamera.depth = -1;
+            _dimmerStereoCamera.stereoTargetEye = StereoTargetEyeMask.Both;
             _dimmerStereoCamera.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             _dimmerStereoCamera.transform.SetParent(Camera.main.transform, false);
 
@@ -147,6 +166,8 @@ namespace Dimmer
             _overlayMat.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
             _overlayMat.SetInt("_ZWrite", 0);
             _overlayMat.SetColor("_Color", new Color(0f, 0f, 0f, _config.DimmerOpacity));
+
+            Camera.main.depth = 0;
 
             Camera.onPreCull += OnCameraPreCull;
             Camera.onPostRender += OnCameraPostRender;
@@ -172,54 +193,57 @@ namespace Dimmer
             if (camera != Camera.main && !_config.DimmerCamera2)
                 return;
 
-            _originalCullingMasks[camera] = camera.cullingMask;
-            camera.cullingMask &= ~DimmerCullingMask;
-        }
+            bool isStereoCamera = camera.stereoActiveEye != Camera.MonoOrStereoscopicEye.Mono;
 
+            if (camera == Camera.main)
+            {
+                if (isStereoCamera)
+                {
+                    _dimmerStereoCamera.CopyFrom(camera);
+                    _dimmerStereoCamera.name = "DimmerStereoCamera";
+                    _dimmerStereoCamera.cullingMask &= ~DimmerCullingMask;
+                    _dimmerStereoCamera.tag = "Untagged";
+                    _dimmerStereoCamera.clearFlags = CameraClearFlags.SolidColor;
+                    _dimmerStereoCamera.depth = -1;
+                }
+                _dimmerStereoCamera.enabled = isStereoCamera;
+            }
+
+            if (!isStereoCamera)
+            {
+                _dimmerCamera.CopyFrom(camera);
+                _dimmerCamera.name = "DimmerCamera";
+                _dimmerCamera.cullingMask &= ~DimmerCullingMask;
+                _dimmerCamera.tag = "Untagged";
+                _dimmerCamera.targetTexture = camera.activeTexture;
+                _dimmerCamera.clearFlags = CameraClearFlags.SolidColor;
+                _dimmerCamera.stereoTargetEye = StereoTargetEyeMask.None;
+                _dimmerCamera.enabled = false;
+                _dimmerCamera.Render();
+            }
+
+            _originalCameraSettings[camera] = new SavedCameraSettings(camera);
+            
+            camera.cullingMask &= DimmerCullingMask;
+            camera.clearFlags = CameraClearFlags.Nothing;
+        }
         public void OnCameraPostRender(Camera camera)
         {
             if (!Plugin.IsPlayingChart)
                 return;
 
             if (camera == _dimmerCamera || camera == _dimmerStereoCamera)
+            {
+                // Render dimmer overlay
+                Graphics.Blit(camera.activeTexture, camera.activeTexture, _overlayMat);
                 return;
+            }
 
             if (camera != Camera.main && !_config.DimmerCamera2)
                 return;
 
-            // Render dimmer overlay
-            Graphics.Blit(camera.activeTexture, camera.activeTexture, _overlayMat);
-
-            // Revert the camera culling mask back to original value just in case
-            camera.cullingMask = _originalCullingMasks[camera];
-
-            bool isSinglePassStereo = camera.stereoActiveEye != Camera.MonoOrStereoscopicEye.Mono && camera.activeTexture.volumeDepth == 2;
-            
-            if (camera == Camera.main)
-            {
-                if (isSinglePassStereo)
-                {
-                    _dimmerStereoCamera.CopyFrom(camera);
-                    _dimmerStereoCamera.name = "DimmerCamera";
-                    _dimmerStereoCamera.cullingMask &= DimmerCullingMask;
-                    _dimmerStereoCamera.tag = "Untagged";
-                    _dimmerStereoCamera.clearFlags = CameraClearFlags.Nothing;
-                }
-                _dimmerStereoCamera.enabled = isSinglePassStereo;
-            }
-            
-            if (!isSinglePassStereo)
-            {
-                _dimmerCamera.CopyFrom(camera);
-                _dimmerCamera.name = "DimmerCamera";
-                _dimmerCamera.cullingMask &= DimmerCullingMask;
-                _dimmerCamera.tag = "Untagged";
-                _dimmerCamera.targetTexture = camera.activeTexture;
-                _dimmerCamera.clearFlags = CameraClearFlags.Nothing;
-                _dimmerCamera.stereoTargetEye = StereoTargetEyeMask.None;
-                _dimmerCamera.enabled = false;
-                _dimmerCamera.Render();
-            }
+            // Revert the camera culling mask and clear flags back to original values just in case
+            _originalCameraSettings[camera].Restore(camera);
         }
 
     }
