@@ -9,7 +9,7 @@ The modifier tab allows you to
 - Change the opacity of the dimmer overlay
 - Enable rendering dimmer in Camera2 views
 
-Currently there is a performance hit when single-pass rendering is enabled (which is the default). You can try turning on legacy multi-pass rendering using AssetBundleLoadingTools for better performance.
+There is a small performance hit from having to use an extra camera to render the different layers, possibly due to the extra BloomPrePass component that is running. This cost seems to be lower when running with legacy multi-pass rendering enabled (can be toggled with AssetBundleLoadingTools)
 
 Dependencies:
 - BeatSaberMarkupLanguage
