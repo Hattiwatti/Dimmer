@@ -1,0 +1,13 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/bsmg/BSIPA-MetadataFileSchema/master/Schema.json",
+  "id": "Dimmer",
+  "name": "Dimmer",
+  "author": "Hatti",
+  "version": "2.0.3",
+  "description": "Adds a dimming overlay to the environment and a modifier tab to adjust its opacity.",
+  "gameVersion": "1.29.1",
+  "dependsOn": {
+    "BSIPA": "^4.2.1",
+    "BeatSaberMarkupLanguage": "^1.6.10"
+  }
+}

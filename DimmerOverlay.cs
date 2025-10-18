@@ -1,5 +1,4 @@
 ﻿using Dimmer.Settings;
-using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -97,7 +96,8 @@ namespace Dimmer
             BSLayerMask.DontShowInExternalMRCamera |
             BSLayerMask.Avatar |
             BSLayerMask.FirstPerson |
-            BSLayerMask.ThirdPerson);
+            BSLayerMask.ThirdPerson |
+            BSLayerMask.GrabPassTexture1);
 
         private readonly DimmerConfig _config;
 
@@ -156,9 +156,10 @@ namespace Dimmer
             _dimmerStereoCamera.enabled = false;
             _dimmerStereoCamera.depth = -1;
             _dimmerStereoCamera.stereoTargetEye = StereoTargetEyeMask.Both;
-            _dimmerStereoCamera.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            _dimmerStereoCamera.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+#if !BS1_29_1
             _dimmerStereoCamera.transform.SetParent(Camera.main.transform, false);
-
+#endif
             _overlayMat = new Material(Shader.Find("Hidden/Internal-Colored"));
             _overlayMat.hideFlags = HideFlags.HideAndDontSave;
             _overlayMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
@@ -190,7 +191,7 @@ namespace Dimmer
             if (camera == _dimmerCamera || camera == _dimmerStereoCamera)
                 return;
 
-            if (camera != Camera.main && !_config.DimmerCamera2)
+            if (camera != Camera.main && (!_config.DimmerCamera2 || camera.name != "Cam"))
                 return;
 
             bool isStereoCamera = camera.stereoActiveEye != Camera.MonoOrStereoscopicEye.Mono;
@@ -239,12 +240,11 @@ namespace Dimmer
                 return;
             }
 
-            if (camera != Camera.main && !_config.DimmerCamera2)
+            if (camera != Camera.main && (!_config.DimmerCamera2 || camera.name != "Cam"))
                 return;
 
             // Revert the camera culling mask and clear flags back to original values just in case
             _originalCameraSettings[camera].Restore(camera);
         }
-
     }
 }

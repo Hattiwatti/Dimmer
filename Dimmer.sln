@@ -1,18 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dimmer", "Dimmer.csproj", "{E8051B7F-A621-44C0-AB09-CC4083EF12C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug 1.29.1|Any CPU = Debug 1.29.1|Any CPU
 		Debug|Any CPU = Debug|Any CPU
+		Release 1.29.1|Any CPU = Release 1.29.1|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E8051B7F-A621-44C0-AB09-CC4083EF12C9}.Debug 1.29.1|Any CPU.ActiveCfg = Debug 1.29.1|Any CPU
+		{E8051B7F-A621-44C0-AB09-CC4083EF12C9}.Debug 1.29.1|Any CPU.Build.0 = Debug 1.29.1|Any CPU
 		{E8051B7F-A621-44C0-AB09-CC4083EF12C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E8051B7F-A621-44C0-AB09-CC4083EF12C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8051B7F-A621-44C0-AB09-CC4083EF12C9}.Release 1.29.1|Any CPU.ActiveCfg = Release 1.29.1|Any CPU
+		{E8051B7F-A621-44C0-AB09-CC4083EF12C9}.Release 1.29.1|Any CPU.Build.0 = Release 1.29.1|Any CPU
 		{E8051B7F-A621-44C0-AB09-CC4083EF12C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E8051B7F-A621-44C0-AB09-CC4083EF12C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
